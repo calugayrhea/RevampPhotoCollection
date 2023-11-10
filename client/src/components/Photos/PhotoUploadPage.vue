@@ -56,8 +56,6 @@
                   :style="{ width: photoSizePercentage + '%', height: 'auto' }" />
               </template>
             </div>
-
-
           </div>
         </div>
       </div>
@@ -172,27 +170,33 @@ export default {
         this.selectedPhotos.push(objectURL);
       }
     },
+    
     async fetchAndDisplayFetchedPhotos(collectionId) {
-      try {
-        const photosResponse = await api.getAllPhotosByCollectionId(collectionId);
-        console.log("Collection ID:", collectionId);
-        console.log("PHOTOS", photosResponse);
+  try {
+    console.log('Fetching photos for collectionId:', collectionId);
+    const photosResponse = await api.getAllPhotosByCollectionId(collectionId);
+    console.log('API response:', photosResponse);
 
-        if (photosResponse.status === 200 && Array.isArray(photosResponse.data)) {
-          console.log("Inside of array", photosResponse.data);
-          const filePaths = photosResponse.data.map((photo) => `${API_BASE_URL}${photo}`);
-          console.log("File Paths:", filePaths);
-          this.fetchedPhotos = filePaths;
-          console.log("Fetched Photos Length:", this.fetchedPhotos.length);
-        } else {
-          console.error('Invalid or unexpected API response:', photosResponse);
-          this.fetchedPhotos = [];
-        }
-      } catch (error) {
-        console.error('Error fetching and displaying fetched photos:', error);
-        this.fetchedPhotos = [];
-      }
-    },
+    if (photosResponse.status === 200 && Array.isArray(photosResponse.data)) {
+      const filePaths = photosResponse.data.map(photo => `${API_BASE_URL}apiCollections/${collectionId}/photos/${photo}`);
+      console.log('File paths:', filePaths);
+      this.fetchedPhotos = filePaths;
+    } else if (photosResponse.status === 404) {
+      // Handle 404 Not Found
+      console.error('Collection not found');
+      this.fetchedPhotos = [];
+    } else {
+      // Handle other unexpected API responses
+      console.error('Invalid or unexpected API response:', photosResponse);
+      this.fetchedPhotos = [];
+    }
+  } catch (error) {
+    console.error('Error fetching and displaying fetched photos:', error);
+    this.fetchedPhotos = [];
+  }
+}
+
+
   },
 };
 </script>

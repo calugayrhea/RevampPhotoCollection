@@ -17,6 +17,8 @@
         "laravel/sail": "^1.18",
         "mockery/mockery": "^1.4.4",
         "nunomaduro/collision": "^7.0",
+        "pestphp/pest": "^2.24",
+        "phpstan/phpstan": "^1.10",
         "phpunit/phpunit": "^10.1",
         "prinsfrank/standards": "^2.5",
         "spatie/laravel-ignition": "^2.0",

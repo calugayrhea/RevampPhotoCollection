@@ -24,18 +24,20 @@ class PhotoRepository
     {
         return Photo::where('collection_id', $collectionId)->pluck('file_path');
     }
-    
+
+  
+
     public function deletePhoto($photoId)
     {
         $photo = Photo::find($photoId);
 
         if (!$photo) {
-            return false; 
+            return false;
         }
 
         Storage::delete($photo->file_path);
         $photo->delete();
 
-        return true; 
+        return true;
     }
 }

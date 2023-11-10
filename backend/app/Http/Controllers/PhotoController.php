@@ -24,42 +24,41 @@ class PhotoController extends Controller
     {
         $uploadedPhotos = [];
         $maxPhotos = 5;
-
+    
         $existingPhotosCount = Photo::where('collection_id', $collectionId)->count();
         $remainingSlots = $maxPhotos - $existingPhotosCount;
-
+    
         if ($request->hasFile('photos')) {
             $uploadedFiles = $request->file('photos');
-
+    
             if (!is_array($uploadedFiles)) {
                 $uploadedFiles = [$uploadedFiles];
             }
-
+    
             $uploadedFileCount = count($uploadedFiles);
-
+    
             if ($uploadedFileCount > $remainingSlots) {
                 return ApiEcho::response(
                     HttpStatusCode::Bad_Request,
                     'Max photos exceeded. You can only upload ' . $remainingSlots . ' more photos.'
                 );
             }
-
+    
             foreach ($uploadedFiles as $photo) {
                 if ($photo->isValid()) {
-                    $path = $photo->store('photos');
-
                     $newPhoto = $this->photoRepository->createPhoto([
                         'collection_id' => $collectionId,
-                        'file_path' => basename($path),
+                        'file_path' => $photo->getClientOriginalName(), // Example: save the file name
                     ]);
-
+    
                     $uploadedPhotos[] = $newPhoto;
                 }
             }
         }
-
+    
         return ApiEcho::response(HttpStatusCode::Created, 'Successfully uploaded photos', $uploadedPhotos);
     }
+    
 
     public function index(Request $request, $collectionId)
 {
@@ -67,6 +66,8 @@ class PhotoController extends Controller
 
     return ApiEcho::response(HttpStatusCode::OK, 'List of Photo Paths', $photos);
 }
+
+
 
 
     public function destroy(Request $request, $collectionId, $photoId)
