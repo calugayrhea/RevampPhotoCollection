@@ -41,11 +41,22 @@ export default {
     return apiCall('post', `apiCollections/${collectionId}/photos`, formData);
   },
 
+  async createPhoto(collectionId, photoData) {
+    return apiCall('post', `apiCollections/${collectionId}/photos`, photoData);
+  },
+
   async getAllPhotosByCollectionId(collectionId) {
     return apiCall('get', `apiCollections/${collectionId}/photos`);
+},
+
+async getPhotoById(collectionId, photoId) {
+  return apiCall('get', `apiCollections/${collectionId}/photos/${photoId}`);
 },
 
   async deletePhoto(collectionId, photoId) {
     return apiCall('delete', `apiCollections/${collectionId}/photos/${photoId}`);
   },  
 };
+
+
+

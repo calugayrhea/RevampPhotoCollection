@@ -3,21 +3,17 @@
 namespace App\Repositories;
 
 use App\Models\Photo;
-use Illuminate\Support\Facades\Storage;
 
 class PhotoRepository
 {
     public function createPhoto(array $data)
     {
-        $path = $data['file_path'];
+        return Photo::create($data);
+    }
 
-        $photo = new Photo([
-            'collection_id' => $data['collection_id'],
-            'file_path' => $path,
-        ]);
-        $photo->save();
-
-        return $photo;
+    public function getPhotoCountByCollectionId($collectionId)
+    {
+        return Photo::where('collection_id', $collectionId)->count();
     }
 
     public function getFilePathsByCollectionId($collectionId)
@@ -25,8 +21,16 @@ class PhotoRepository
         return Photo::where('collection_id', $collectionId)->pluck('file_path');
     }
 
-  
 
+    public function getPhotosByCollectionId($collectionId)
+    {
+        return Photo::where('collection_id', $collectionId)->with('collection')->get();
+    }
+
+    public function getPhotoById($photoId)
+    {
+        return Photo::with('collection')->find($photoId);
+    }
     public function deletePhoto($photoId)
     {
         $photo = Photo::find($photoId);
@@ -35,7 +39,6 @@ class PhotoRepository
             return false;
         }
 
-        Storage::delete($photo->file_path);
         $photo->delete();
 
         return true;
